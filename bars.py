@@ -1,5 +1,5 @@
 import json
-
+import argparse
 
 def load_data(filepath):
     with open(filepath, 'r', encoding='utf8') as file_handler:
@@ -46,7 +46,12 @@ def get_distance(coordinates):
 
 
 if __name__ == '__main__':
-    filepath = 'bars.json'
+    parser = argparse.ArgumentParser(description='Find the closest bar')
+    parser.add_argument('filepath', nargs='?', default='bars.json',
+                    help='An optional filepath')
+    args = parser.parse_args()
+    filepath = args.filepath
+
     json_content = load_data(filepath)
     bars = json_content.get('features')
 
