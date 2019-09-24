@@ -2,7 +2,7 @@ import json
 
 
 def load_data(filepath):
-    with open(filepath, "r", encoding="utf8") as file_handler:
+    with open(filepath, 'r', encoding='utf8') as file_handler:
         return json.loads(file_handler.read())
 
 
@@ -29,25 +29,26 @@ def get_closest_bar(bars, longitude, latitude):
 
 
 def get_bar_name(bar):
-    return bar.get("properties").get("Attributes").get("Name")
+    return bar.get('properties').get('Attributes').get('Name')
 
 
 def get_bar_size(bar):
-    return bar.get("properties").get("Attributes").get("SeatsCount")
+    return bar.get('properties').get('Attributes').get('SeatsCount')
 
 
 def get_bar_coordinates(bar):
-    return bar.get("geometry").get("coordinates")
+    return bar.get('geometry').get('coordinates')
 
 
 def get_distance(coordinates):
     return ((coordinates[0]-longitude)**2 + (coordinates[1]-latitude)**2)**0.5
 
 
+
 if __name__ == '__main__':
-    filepath = "bars.json"
+    filepath = 'bars.json'
     json_content = load_data(filepath)
-    bars = json_content.get("features")
+    bars = json_content.get('features')
 
     names_list = list(map(get_bar_name, bars))
 
