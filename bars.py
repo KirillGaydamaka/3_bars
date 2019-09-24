@@ -52,8 +52,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     filepath = args.filepath
 
-    json_content = load_data(filepath)
-    bars = json_content.get('features')
+    bars = load_data(filepath).get('features')
 
     names_list = list(map(get_bar_name, bars))
 
