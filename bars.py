@@ -53,13 +53,12 @@ if __name__ == '__main__':
     smallest_bar = get_smallest_bar(bars)
     print('Самый маленький бар: ', get_bar_name(smallest_bar))
 
-    while True:
-        try:
-            user_input = input('Введите координаты: ')
-            longitude, latitude = map(float, user_input.split())
-            break
-        except ValueError:
-            print('Необходимо ввести два числа через пробел')
+    user_input = input('Введите координаты: ')
+    try:    
+        longitude, latitude = map(float, user_input.split())
+    except ValueError:
+        print('Некорректный ввод')
+        quit()
 
     closest_bar = get_closest_bar(bars, longitude, latitude)
     print('Ближайший бар: ', get_bar_name(closest_bar))
