@@ -3,8 +3,8 @@ import argparse
 
 
 def load_data(filepath):
-    with open(filepath, 'r', encoding='utf8') as file_handler:
-        return json.loads(file_handler.read())
+    with open(filepath, 'r', encoding='utf8') as file:
+        return json.loads(file.read())
 
 
 def get_biggest_bar(bars):
@@ -43,8 +43,11 @@ if __name__ == '__main__':
 
     try:
         bars = load_data(filepath).get('features')
-    except:
-        print('Невозможно открыть файл с данными')
+    except FileNotFoundError:
+        print('Файл не найден')
+        quit()
+    except json.decoder.JSONDecodeError:
+        print('Некорректный формат файла')
         quit()
 
     biggest_bar = get_biggest_bar(bars)
@@ -54,7 +57,7 @@ if __name__ == '__main__':
     print('Самый маленький бар: ', get_bar_name(smallest_bar))
 
     user_input = input('Введите координаты: ')
-    try:    
+    try:
         longitude, latitude = map(float, user_input.split())
     except ValueError:
         print('Некорректный ввод')
