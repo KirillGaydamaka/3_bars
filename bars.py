@@ -1,10 +1,18 @@
 import json
 import argparse
+import os
 
 
 def load_data(filepath):
-    with open(filepath, 'r', encoding='utf8') as file:
-        return json.loads(file.read())
+    if not os.path.exists(filepath):
+        print('Файл не сущетсвует')
+        quit()
+    try:
+        with open(filepath, 'r', encoding='utf8') as file:
+            return json.loads(file.read()).get('features')
+    except json.decoder.JSONDecodeError:
+        print('Некорректный формат файла')
+        quit()
 
 
 def get_biggest_bar(bars):
@@ -34,6 +42,16 @@ def get_bar_size(bar):
     return bar.get('properties').get('Attributes').get('SeatsCount')
 
 
+def get_user_coordinates():
+    user_input = input('Введите координаты: ')
+    try:
+        longitude, latitude = map(float, user_input.split())
+    except ValueError:
+        print('Некорректный ввод')
+        quit()
+    return longitude, latitude
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Find the closest bar')
     parser.add_argument('filepath', nargs='?', default='bars.json',
@@ -41,14 +59,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     filepath = args.filepath
 
-    try:
-        bars = load_data(filepath).get('features')
-    except FileNotFoundError:
-        print('Файл не найден')
-        quit()
-    except json.decoder.JSONDecodeError:
-        print('Некорректный формат файла')
-        quit()
+    bars = load_data(filepath)
 
     biggest_bar = get_biggest_bar(bars)
     print('Самый большой бар: ', get_bar_name(biggest_bar))
@@ -56,12 +67,7 @@ if __name__ == '__main__':
     smallest_bar = get_smallest_bar(bars)
     print('Самый маленький бар: ', get_bar_name(smallest_bar))
 
-    user_input = input('Введите координаты: ')
-    try:
-        longitude, latitude = map(float, user_input.split())
-    except ValueError:
-        print('Некорректный ввод')
-        quit()
+    longitude, latitude = get_user_coordinates()
 
     closest_bar = get_closest_bar(bars, longitude, latitude)
     print('Ближайший бар: ', get_bar_name(closest_bar))
