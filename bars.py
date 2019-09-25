@@ -41,7 +41,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
     filepath = args.filepath
 
-    bars = load_data(filepath).get('features')
+    try:
+        bars = load_data(filepath).get('features')
+    except:
+        print('Невозможно открыть файл с данными')
+        quit()
 
     biggest_bar = get_biggest_bar(bars)
     print('Самый большой бар: ', get_bar_name(biggest_bar))
@@ -49,8 +53,13 @@ if __name__ == '__main__':
     smallest_bar = get_smallest_bar(bars)
     print('Самый маленький бар: ', get_bar_name(smallest_bar))
 
-    longitude = float(input('Введите долготу: '))  # Например, 37.62
-    latitude = float(input('Введите широту: '))  # Например, 55.76
+    while True:
+        try:
+            user_input = input('Введите координаты: ')
+            longitude, latitude = map(float, user_input.split())
+            break
+        except ValueError:
+            print('Необходимо ввести два числа через пробел')
 
     closest_bar = get_closest_bar(bars, longitude, latitude)
     print('Ближайший бар: ', get_bar_name(closest_bar))
