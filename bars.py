@@ -1,31 +1,29 @@
 import json
 import argparse
 
+
 def load_data(filepath):
     with open(filepath, 'r', encoding='utf8') as file_handler:
         return json.loads(file_handler.read())
 
 
 def get_biggest_bar(bars):
-    sizes_list = list(map(get_bar_size, bars))
-    biggest_size = max(sizes_list)
-    biggest_bar_id = sizes_list.index(biggest_size)
-    return biggest_bar_id
+    biggest_bar = max(bars, key=get_bar_size)
+    return biggest_bar
 
 
 def get_smallest_bar(bars):
-    sizes_list = list(map(get_bar_size, bars))
-    smallest_size = min(sizes_list)
-    smallest_bar_id = sizes_list.index(smallest_size)
-    return smallest_bar_id
+    smallest_bar = min(bars, key=get_bar_size)
+    return smallest_bar
 
 
 def get_closest_bar(bars, longitude, latitude):
-    coordinates_list = list(map(get_bar_coordinates, bars))
-    distances_list = list(map(get_distance, coordinates_list))
-    smallest_distance = min(distances_list)
-    closest_bar_id = distances_list.index(smallest_distance)
-    return closest_bar_id
+    def get_bar_distance(bar):
+        coord = bar.get('geometry').get('coordinates')
+        return ((coord[0]-longitude)**2 + (coord[1]-latitude)**2)**0.5
+
+    closest_bar = min(bars, key=get_bar_distance)
+    return closest_bar
 
 
 def get_bar_name(bar):
@@ -36,32 +34,23 @@ def get_bar_size(bar):
     return bar.get('properties').get('Attributes').get('SeatsCount')
 
 
-def get_bar_coordinates(bar):
-    return bar.get('geometry').get('coordinates')
-
-
-def get_distance(coordinates):
-    return ((coordinates[0]-longitude)**2 + (coordinates[1]-latitude)**2)**0.5
-
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Find the closest bar')
     parser.add_argument('filepath', nargs='?', default='bars.json',
-                    help='An optional filepath')
+                        help='An optional filepath')
     args = parser.parse_args()
     filepath = args.filepath
 
     bars = load_data(filepath).get('features')
 
-    names_list = list(map(get_bar_name, bars))
+    biggest_bar = get_biggest_bar(bars)
+    print('Самый большой бар: ', get_bar_name(biggest_bar))
 
-    print('Самый большой бар: ', names_list[get_biggest_bar(bars)])
-    print('Самый маленький бар: ', names_list[get_smallest_bar(bars)])
+    smallest_bar = get_smallest_bar(bars)
+    print('Самый маленький бар: ', get_bar_name(smallest_bar))
 
     longitude = float(input('Введите долготу: '))  # Например, 37.62
     latitude = float(input('Введите широту: '))  # Например, 55.76
 
-    print(
-        'Ближайший бар: ',
-        names_list[get_closest_bar(bars, longitude, latitude)])
+    closest_bar = get_closest_bar(bars, longitude, latitude)
+    print('Ближайший бар: ', get_bar_name(closest_bar))
