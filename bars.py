@@ -25,7 +25,8 @@ def get_smallest_bar(bars):
 
 def get_closest_bar(bars, longitude, latitude):
     def get_bar_distance(bar):
-        coord = bar.get('geometry').get('coordinates')
+        bar_geometry = bar.get('geometry')
+        coord = bar_geometry.get('coordinates')
         return ((coord[0]-longitude)**2 + (coord[1]-latitude)**2)**0.5
 
     closest_bar = min(bars, key=get_bar_distance)
@@ -33,11 +34,17 @@ def get_closest_bar(bars, longitude, latitude):
 
 
 def get_bar_name(bar):
-    return bar.get('properties').get('Attributes').get('Name')
+    bar_properties = bar.get('properties')
+    bar_attributes = bar_properties.get('Attributes')
+    bar_name = bar_attributes.get('Name')
+    return bar_name
 
 
 def get_bar_size(bar):
-    return bar.get('properties').get('Attributes').get('SeatsCount')
+    bar_properties = bar.get('properties')
+    bar_attributes = bar_properties.get('Attributes')
+    bar_seatscount = bar_attributes.get('SeatsCount')
+    return bar_seatscount
 
 
 def get_user_coordinates():
@@ -45,8 +52,7 @@ def get_user_coordinates():
     try:
         longitude, latitude = map(float, user_input.split())
     except ValueError:
-        print('Некорректный ввод')
-        quit()
+        return None
     return longitude, latitude
 
 
@@ -68,7 +74,12 @@ if __name__ == '__main__':
     smallest_bar = get_smallest_bar(bars)
     print('Самый маленький бар: ', get_bar_name(smallest_bar))
 
-    longitude, latitude = get_user_coordinates()
+    user_coordinates = get_user_coordinates()
+    if user_coordinates is None:
+        print('Некорректный ввод')
+        exit()
+
+    longitude, latitude = user_coordinates 
 
     closest_bar = get_closest_bar(bars, longitude, latitude)
     print('Ближайший бар: ', get_bar_name(closest_bar))
