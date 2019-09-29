@@ -5,14 +5,12 @@ import os
 
 def load_data(filepath):
     if not os.path.exists(filepath):
-        print('Файл не сущетсвует')
-        quit()
+        return None
     try:
         with open(filepath, 'r', encoding='utf8') as file:
             return json.loads(file.read()).get('features')
     except json.decoder.JSONDecodeError:
-        print('Некорректный формат файла')
-        quit()
+        return None
 
 
 def get_biggest_bar(bars):
@@ -60,6 +58,9 @@ if __name__ == '__main__':
     filepath = args.filepath
 
     bars = load_data(filepath)
+    if bars is None:
+        print('Не удалось загрузить данные')
+        exit()
 
     biggest_bar = get_biggest_bar(bars)
     print('Самый большой бар: ', get_bar_name(biggest_bar))
