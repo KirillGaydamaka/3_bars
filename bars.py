@@ -18,12 +18,18 @@ def load_data(filepath):
 
 
 def get_biggest_bar(bars):
-    biggest_bar = max(bars, key=get_bar_size)
+    try:
+        biggest_bar = max(bars, key=get_bar_size)
+    except DataValidationException:
+        return None
     return biggest_bar
 
 
 def get_smallest_bar(bars):
-    smallest_bar = min(bars, key=get_bar_size)
+    try:
+        smallest_bar = min(bars, key=get_bar_size)
+    except DataValidationException:
+        return None
     return smallest_bar
 
 
@@ -37,7 +43,10 @@ def get_closest_bar(bars, longitude, latitude):
             raise DataValidationException('Bar has no coordinates')
         return ((coord[0]-longitude)**2 + (coord[1]-latitude)**2)**0.5
 
-    closest_bar = min(bars, key=get_bar_distance)
+    try:
+        closest_bar = min(bars, key=get_bar_distance)
+    except DataValidationException:
+        return None
     return closest_bar
 
 
@@ -87,16 +96,14 @@ if __name__ == '__main__':
     if bars is None:
         exit('Не удалось загрузить данные')
 
-    try:
-        biggest_bar = get_biggest_bar(bars)
-    except DataValidationException:
+    biggest_bar = get_biggest_bar(bars)
+    if biggest_bar is None:
         exit('Некорректные данные')
     else:
         print('Самый большой бар: ', get_bar_name(biggest_bar))
 
-    try:
-        smallest_bar = get_smallest_bar(bars)
-    except DataValidationException:
+    smallest_bar = get_smallest_bar(bars)
+    if smallest_bar is None:
         exit('Некорректные данные')
     else:
         print('Самый маленький бар: ', get_bar_name(smallest_bar))
@@ -106,9 +113,8 @@ if __name__ == '__main__':
         exit('Некорректный ввод')
 
     longitude, latitude = user_coordinates
-    try:
-        closest_bar = get_closest_bar(bars, longitude, latitude)
-    except DataValidationException:
+    closest_bar = get_closest_bar(bars, longitude, latitude)
+    if closest_bar is None:
         exit('Некорректные данные')
     else:
         print('Ближайший бар: ', get_bar_name(closest_bar))
