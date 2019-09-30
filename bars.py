@@ -65,8 +65,7 @@ if __name__ == '__main__':
 
     bars = load_data(filepath)
     if bars is None:
-        print('Не удалось загрузить данные')
-        exit()
+        exit('Не удалось загрузить данные')
 
     biggest_bar = get_biggest_bar(bars)
     print('Самый большой бар: ', get_bar_name(biggest_bar))
@@ -76,10 +75,9 @@ if __name__ == '__main__':
 
     user_coordinates = get_user_coordinates()
     if user_coordinates is None:
-        print('Некорректный ввод')
-        exit()
+        exit('Некорректный ввод')
 
-    longitude, latitude = user_coordinates 
+    longitude, latitude = user_coordinates
 
     closest_bar = get_closest_bar(bars, longitude, latitude)
     print('Ближайший бар: ', get_bar_name(closest_bar))
