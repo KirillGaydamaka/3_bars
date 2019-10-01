@@ -96,22 +96,18 @@ if __name__ == '__main__':
     if bars is None:
         exit('Не удалось загрузить данные')
 
-    biggest_bar = get_biggest_bar(bars)
-    if biggest_bar is None:
-        exit('Некорректные данные')
-    print('Самый большой бар: ', get_bar_name(biggest_bar))
-
-    smallest_bar = get_smallest_bar(bars)
-    if smallest_bar is None:
-        exit('Некорректные данные')
-    print('Самый маленький бар: ', get_bar_name(smallest_bar))
-
     user_coordinates = get_user_coordinates()
     if user_coordinates is None:
         exit('Некорректный ввод')
 
+    biggest_bar = get_biggest_bar(bars)
+    smallest_bar = get_smallest_bar(bars)
     longitude, latitude = user_coordinates
     closest_bar = get_closest_bar(bars, longitude, latitude)
-    if closest_bar is None:
-        exit('Некорректные данные')
+
+    if biggest_bar is None or smallest_bar is None or closest_bar is None:
+        exit('Некорректные данные в файле данных')
+
+    print('Самый большой бар: ', get_bar_name(biggest_bar))
+    print('Самый маленький бар: ', get_bar_name(smallest_bar))
     print('Ближайший бар: ', get_bar_name(closest_bar))
